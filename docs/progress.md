@@ -40,3 +40,33 @@
 **Blockers:** None
 
 **Time Invested:** 1 hours
+
+## Day 3 (Dec 6, 2024)
+**Goal:** Deploy AWS RDS PostgreSQL database with production schema
+
+**Accomplished:**
+- ✅ Created RDS PostgreSQL instance (db.t4g.micro, free tier)
+- ✅ Configured security group for secure access
+- ✅ Tested database connection successfully
+- ✅ Designed production schema with:
+  - weather_observations table
+  - Data quality constraints
+  - Performance indexes (city, timestamp)
+  - latest_weather view for quick queries
+- ✅ Deployed schema to RDS
+- ✅ Verified tables, indexes, and views created
+
+**Key Decisions:**
+- Used PostgreSQL over DynamoDB (leverages SQL expertise)
+- Implemented data quality score field (proactive monitoring)
+- Created compound index on (city, timestamp DESC) for dashboard queries
+- Added unique constraint to prevent duplicate records
+
+**Estimated Monthly Cost:** $15 (within free tier for first 12 months)
+
+**Next Steps (Day 4):**
+- Connect API collector to RDS
+- Insert first real weather data
+- Verify data quality checks work
+
+**Time Invested:** 1.5 hours
