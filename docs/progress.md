@@ -70,3 +70,35 @@
 - Verify data quality checks work
 
 **Time Invested:** 1.5 hours
+
+## Day 4 (Dec 8, 2024)
+**Goal:** Connect API collector to RDS database
+
+**Accomplished:**
+- ✅ Built integrated WeatherPipeline class
+- ✅ Implemented data quality validation (0.0-1.0 scoring)
+- ✅ Added error handling for API and database operations
+- ✅ Implemented batch insert with duplicate prevention
+- ✅ Created pipeline statistics reporting
+- ✅ Successfully stored 25+ weather observations
+- ✅ Built query utility to inspect data
+
+**Key Features Implemented:**
+- Data quality scoring based on validation rules
+- Batch insert with execute_batch() for efficiency
+- ON CONFLICT DO NOTHING for duplicate prevention
+- Comprehensive error handling at each stage
+- Real-time statistics after each run
+
+**Current Data:**
+- 25+ observations across 5 cities
+- 100% data quality score
+- Zero duplicates
+
+**Next Steps (Day 5):**
+- Add scheduling (run automatically every 15 minutes)
+- Implement logging to file
+- Add CloudWatch metrics preparation
+
+**Time Invested:** 1 hour
+
