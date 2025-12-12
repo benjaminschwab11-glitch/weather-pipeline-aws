@@ -102,3 +102,38 @@
 
 **Time Invested:** 1 hour
 
+## Day 5 (Dec 9, 2024)
+**Goal:** Add professional logging and local scheduling
+
+**Accomplished:**
+- ✅ Implemented structured logging system
+- ✅ Logs written to daily files in logs/ directory
+- ✅ Enhanced pipeline with comprehensive logging
+- ✅ Built scheduler to run pipeline every 15 minutes
+- ✅ Created startup script for easy execution
+- ✅ Tested automated execution successfully
+
+**Key Features Implemented:**
+- Professional logging with file and console handlers
+- Daily log rotation (one file per day)
+- Scheduled execution using `schedule` library
+- Graceful shutdown on Ctrl+C
+- Startup script for convenience
+
+**Technical Details:**
+- Logging format: timestamp | logger | level | message
+- Schedule: Every 15 minutes
+- Logs stored in logs/ directory (git ignored)
+- Initial execution runs immediately on startup
+
+**Current Status:**
+- Pipeline can run automatically on local machine
+- 50+ observations collected so far
+- All executions logged for auditing
+
+**Next Steps (Day 6):**
+- Let pipeline run overnight to accumulate data
+- Prepare for AWS Lambda migration
+- Design CloudWatch logging strategy
+
+**Time Invested:** 1 hour
