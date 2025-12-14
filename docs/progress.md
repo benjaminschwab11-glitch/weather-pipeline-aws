@@ -168,3 +168,33 @@
 
 **Time Invested:** 0.5 hours
 
+## Day 7 (Dec 12, 2024)
+**Goal:** Prepare Lambda function for AWS deployment
+
+**Accomplished:**
+- ✅ Created Lambda-compatible pipeline code
+- ✅ Implemented lambda_handler entry point
+- ✅ Added CloudWatch metrics publishing
+- ✅ Tested Lambda function locally
+- ✅ Created deployment package (lambda_deployment.zip)
+- ✅ Documented deployment process
+
+**Key Differences from Local Version:**
+- Uses environment variables instead of .env file
+- Added CloudWatch metrics for observability
+- Optimized error handling for Lambda retries
+- Removed file-based logging (CloudWatch Logs instead)
+
+**Deployment Package:**
+- Size: ~15 MB
+- Contains: requests library + lambda_function.py
+- Will use Lambda Layer for psycopg2
+
+**Next Steps (Day 8):**
+- Create Lambda function in AWS
+- Upload deployment package
+- Configure environment variables
+- Test manual invocation
+
+**Time Invested:** .75 hours
+
