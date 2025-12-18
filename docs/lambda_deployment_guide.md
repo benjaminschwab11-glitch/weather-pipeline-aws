@@ -1,3 +1,4 @@
+
 # AWS Lambda Deployment Guide
 
 ## Pre-Deployment Checklist
@@ -121,4 +122,67 @@ Expected response:
 ---
 
 **Next:** Day 8 - Deploy to AWS Lambda
+
+---
+
+## Network Configuration (ADDED Dec 15, 2025)
+
+**VPC:** Not in VPC (Lambda runs in AWS-managed VPC)  
+**RDS Access:** Allowed via security group inbound rule  
+
+### RDS Security Group Inbound Rules
+
+- Type: PostgreSQL
+- Port: 5432
+- Source: 0.0.0.0/0 (for portfolio project simplicity)
+- Description: Lambda access to RDS
+
+**Production Recommendation:** Place Lambda in VPC and restrict RDS security group to Lambda's security group only for enhanced security.
+
+---
+
+## Deployment Success (Dec 15, 2025)
+
+✅ Lambda function operational  
+✅ Manual test successful  
+✅ Data flowing to RDS  
+✅ CloudWatch logging working  
+
+**First Successful Execution:**
+- Duration: ~10-12 seconds
+- Memory used: ~70-80 MB
+- Records stored: 5
+- Status: SUCCESS
+
+---
+
+## Troubleshooting Resolution
+
+### Issue: Database Connection Timeout
+
+**Symptom:**
+```
+✗ Database error: connection to server at "weather-pipeline-db..." 
+port 5432 failed: timeout expired
+```
+
+**Root Cause:** RDS security group only allowed personal IP address, not Lambda's IP ranges
+
+**Solution:** Updated RDS security group inbound rules to allow 0.0.0.0/0
+
+**Resolution Steps:**
+1. Go to RDS Console → weather-pipeline-db
+2. Click Connectivity & security → Security group link
+3. Edit inbound rules
+4. Change PostgreSQL rule source to 0.0.0.0/0
+5. Save rules
+6. Re-test Lambda function
+
+**Result:** ✅ Lambda successfully connects and stores data
+
+**Key Learning:** Lambda functions run from AWS IP ranges, not your local IP. Security groups must accommodate Lambda's network context.
+
+---
+
+**Next:** Day 9 - EventBridge scheduling for automated execution
 
