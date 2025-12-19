@@ -9,3 +9,6 @@ lambda/package/
 lambda/*.zip
 lambda/lambda_current/
 *.backup
+lambda/package/
+lambda/*.zip
+start_pipeline.sh
