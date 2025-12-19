@@ -4,3 +4,8 @@ __pycache__/
 venv/
 .DS_Store
 *.db
+logs/
+lambda/package/
+lambda/*.zip
+lambda/lambda_current/
+*.backup
