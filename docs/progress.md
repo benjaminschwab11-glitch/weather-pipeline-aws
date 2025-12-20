@@ -277,3 +277,32 @@ Complete automation. Pipeline runs continuously in AWS cloud:
 - Goal: Portfolio-ready presentation
 
 **Time Invested:** 1 hour
+
+## Day 11 (Dec 19, 2024)
+**Goal:** Fix timestamp issue and start dashboard development
+
+**Part 1: Timestamp Fix - COMPLETE ✅**
+
+**Problem Identified:**
+- Lambda collecting 5 cities but only storing 1 per execution
+- Root cause: Each city had slightly different timestamp, causing unique constraint conflicts
+- ON CONFLICT DO NOTHING was silently dropping 4 out of 5 records
+
+**Solution Implemented:**
+- Modified `collect_all_weather()` to create single timestamp for entire collection run
+- All 5 cities now share identical timestamp (represents one collection event)
+- Changed `inserted_count` calculation from `cursor.rowcount` to `len(data)` for accurate logging
+
+**Results:**
+- ✅ Collecting: 5 cities per execution
+- ✅ Storing: 5 records per execution (up from 1)
+- ✅ Efficiency: 100% (5x improvement)
+- ✅ Verified in database: All 5 records with identical timestamps
+
+**Expected Impact:**
+- 480 records/day (up from 96)
+- 14,400 records/month (up from 2,880)
+- Much richer dataset for dashboard visualization
+
+**Time Invested (Part 1):** 45 minutes
+
