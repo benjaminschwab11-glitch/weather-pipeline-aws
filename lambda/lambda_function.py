@@ -1,6 +1,7 @@
 """
 AWS Lambda Handler for Weather Pipeline
 Serverless version optimized for Lambda execution
+FIXED: Uses single timestamp per collection run to avoid duplicate conflicts
 """
 
 import json
@@ -65,8 +66,8 @@ class WeatherPipelineLambda:
         
         return final_score
     
-    def fetch_weather(self, city):
-        """Fetch weather data from API"""
+    def fetch_weather(self, city, collection_timestamp):
+        """Fetch weather data from API with shared timestamp"""
         params = {
             'q': city.strip(),
             'appid': self.api_key,
@@ -80,7 +81,7 @@ class WeatherPipelineLambda:
             
             record = {
                 'city': city.strip(),
-                'timestamp': datetime.utcnow(),
+                'timestamp': collection_timestamp,  # FIXED: Use shared timestamp
                 'temperature': data['main']['temp'],
                 'feels_like': data['main']['feels_like'],
                 'humidity': data['main']['humidity'],
@@ -109,12 +110,16 @@ class WeatherPipelineLambda:
             return None
     
     def collect_all_weather(self):
-        """Collect weather data for all cities"""
+        """Collect weather data for all cities with single timestamp"""
         print(f"Starting collection for {len(self.cities)} cities")
+        
+        # FIXED: Create single timestamp for this entire collection run
+        collection_timestamp = datetime.utcnow()
+        print(f"Collection timestamp: {collection_timestamp.isoformat()}")
         
         results = []
         for city in self.cities:
-            record = self.fetch_weather(city)
+            record = self.fetch_weather(city, collection_timestamp)
             if record:
                 results.append(record)
             time.sleep(0.5)  # Rate limiting
@@ -157,9 +162,15 @@ class WeatherPipelineLambda:
             execute_batch(cursor, insert_query, data)
             conn.commit()
             
-            inserted_count = cursor.rowcount
-            print(f"✓ Successfully stored {inserted_count} records in RDS")
+            # cursor.rowcount is unreliable with execute_batch, use len(data) instead
+            inserted_count = len(data)
+            print(f"✓ Attempted to store {inserted_count} records in RDS")
             
+            # Verify actual inserts
+            cursor.execute("SELECT COUNT(*) FROM weather_observations WHERE timestamp = %s", (data[0][1],))
+            actual_count = cursor.fetchone()[0]
+            print(f"✓ Verified {actual_count} records in database with this timestamp")
+
             cursor.close()
             return inserted_count
             
