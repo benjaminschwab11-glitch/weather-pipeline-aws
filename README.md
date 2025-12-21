@@ -4,10 +4,24 @@ A production-quality data engineering pipeline demonstrating modern cloud-native
 
 ## 🎯 Project Overview
 
-**Live Status:** ✅ Collecting data every 15 minutes  
-**Current Dataset:** 100+ weather observations across 5 West Coast cities  
-**Uptime:** Running since December 5, 2024
+## 🎯 Project Overview
 
+**🌐 Live Dashboard:** [View Dashboard](YOUR_STREAMLIT_URL_HERE)  
+**📂 GitHub Repository:** [Source Code](https://github.com/benjaminschwab11-glitch/weather-pipeline-aws)  
+**Live Status:** ✅ Collecting data every 15 minutes, fully automated  
+**Dataset:** 2,000+ weather observations (and growing)  
+**Deployed:** December 20, 2024
+```
+
+** https://weather-pipeline-aws-f2ov36k74bnjfmhmcvbikw.streamlit.app **
+
+---
+
+**What's your Streamlit dashboard URL?** (So I can give you the exact line to paste)
+
+It should look like:
+```
+https://benjaminschwab11-glitch-weather-pipeline-aws-dashboard-xxxxx.streamlit.app
 ## 🏗️ Architecture
 ```
 OpenWeatherMap API → Python ETL → PostgreSQL (AWS RDS) → Dashboard (Coming)
