@@ -4,7 +4,7 @@ A production-quality data engineering pipeline demonstrating modern cloud-native
 
 ## 🎯 Project Overview
 
-**🌐 Live Dashboard:** [View Dashboard](YOUR_STREAMLIT_URL_HERE)  
+**🌐 Live Dashboard:** [View Dashboard](https://weather-pipeline-aws-f2ov36k74bnjfmhmcvbikw.streamlit.app)  
 **📂 GitHub Repository:** [Source Code](https://github.com/benjaminschwab11-glitch/weather-pipeline-aws)  
 **Live Status:** ✅ Collecting data every 15 minutes, fully automated  
 **Dataset:** 2,000+ weather observations (and growing)  
