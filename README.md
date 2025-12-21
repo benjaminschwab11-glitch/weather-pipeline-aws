@@ -15,11 +15,6 @@ A production-quality data engineering pipeline demonstrating modern cloud-native
 
 ---
 
-**What's your Streamlit dashboard URL?** (So I can give you the exact line to paste)
-
-It should look like:
-```
-https://benjaminschwab11-glitch-weather-pipeline-aws-dashboard-xxxxx.streamlit.app
 ## 🏗️ Architecture
 ```
 OpenWeatherMap API → Python ETL → PostgreSQL (AWS RDS) → Dashboard (Coming)
