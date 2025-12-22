@@ -16,12 +16,10 @@ A production-quality data engineering pipeline demonstrating modern cloud-native
 ---
 
 ## 🏗️ Architecture
-```
-OpenWeatherMap API → Python ETL → PostgreSQL (AWS RDS) → Dashboard (Coming)
-         ↓              ↓              ↓
-    Real-time      Validation    Cloud Storage
-     Data          & Logging      & Indexing
-```
+
+![Architecture Diagram](docs/architecture.png)
+
+### Current Components (Production)
 
 ### Current Components (Days 1-6)
 
