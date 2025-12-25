@@ -462,3 +462,55 @@ Complete automation. Pipeline runs continuously in AWS cloud:
 
 **Time Invested:** 1.5 hours
 
+## Day 15 (Dec 25, 2024)
+**Goal:** Implement Infrastructure as Code with Terraform
+
+**Accomplished:**
+- ✅ Installed Terraform v1.14.3 on Mac
+- ✅ Created Terraform project structure (6 files)
+- ✅ Defined RDS PostgreSQL infrastructure as code
+- ✅ Defined security group infrastructure as code
+- ✅ Configured AWS provider with proper tagging
+- ✅ Created variables and outputs
+- ✅ Learned terraform init, plan, import, state commands
+- ✅ Attempted import of existing resources
+- ✅ Documented IaC implementation and lessons learned
+
+**Terraform Files Created:**
+- `providers.tf` - AWS provider configuration
+- `variables.tf` - Input variable definitions (11 variables)
+- `terraform.tfvars` - Variable values (gitignored)
+- `main.tf` - Data sources and local values
+- `rds.tf` - RDS database and security group resources
+- `outputs.tf` - Output definitions (5 outputs)
+- `README.md` - Complete documentation
+
+**Key Learnings:**
+- Terraform declarative syntax and workflow
+- Infrastructure state management
+- Importing existing resources has challenges (immutable attributes)
+- Some AWS resources can't be modified without replacement
+- IaC is most effective when used from project start
+- Sensitive values management (tfvars, .gitignore)
+
+**Import Challenge:**
+- Attempted to import existing RDS and security group
+- Import succeeded but configuration drift detected
+- Existing resources have immutable attributes (encryption, names, descriptions)
+- Terraform wanted to destroy and recreate (not acceptable for production data)
+- Resolution: Keep config as IaC template and documentation
+
+**Value Demonstrated:**
+- Understanding of Infrastructure as Code principles
+- Terraform syntax and AWS provider
+- Can explain IaC benefits vs. manual console deployment
+- Foundation for future greenfield deployments
+- Interview talking point: "Learned importance of IaC from day one"
+
+**Next Steps (Day 16):**
+- Add unit tests for Lambda function
+- OR: Add more Terraform resources (Lambda, EventBridge)
+- OR: Move to demo video and blog post
+
+**Time Invested:** 2 hours
+
