@@ -421,3 +421,44 @@ Complete automation. Pipeline runs continuously in AWS cloud:
 - Dashboard: https://weather-pipeline-aws-f2ov36k74bnjfmhmcvbikw.streamlit.app
 - GitHub: https://github.com/benjaminschwab11-glitch/weather-pipeline-aws
 
+## Day 14 (Dec 24, 2024)
+**Goal:** Implement production monitoring and alerting
+
+**Accomplished:**
+- ✅ Created SNS topic for alerts (us-west-2)
+- ✅ Created 3 CloudWatch alarms:
+  - Lambda errors (≥2 errors in 5 min)
+  - Slow execution (>15 seconds)
+  - Pipeline stopped (<3 invocations/hour)
+- ✅ Built CloudWatch dashboard with 5 widgets:
+  - Invocations/errors/throttles
+  - Duration trends
+  - Custom metrics
+  - Error count
+  - Success rate calculation
+- ✅ Configured alarm actions to SNS topic
+- ✅ Documented monitoring setup and response procedures
+
+**Monitoring Infrastructure:**
+- Real-time dashboard with 1-minute auto-refresh
+- Automated alarm evaluation
+- Custom metrics tracking (RecordsCollected, RecordsStored, ExecutionTime)
+- SNS topic ready for notification subscriptions
+- Complete incident response documentation
+
+**Key Learnings:**
+- AWS resources are region-specific - verified us-west-2 throughout
+- CloudWatch dashboard provides excellent visual monitoring
+- Alarms work independently of notification subscriptions
+- Custom metrics integrate seamlessly with standard AWS metrics
+
+**Cost Impact:** +$0.30/month (3 CloudWatch alarms)
+
+**Next Steps (Day 15):**
+- Install Terraform
+- Start Infrastructure as Code
+- Define RDS in Terraform
+- Learn terraform workflow
+
+**Time Invested:** 1.5 hours
+
