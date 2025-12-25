@@ -13,3 +13,11 @@ lambda/package/
 lambda/*.zip
 start_pipeline.sh
 .streamlit/secrets.toml
+
+# Terraform
+infrastructure/terraform/.terraform/
+infrastructure/terraform/.terraform.lock.hcl
+infrastructure/terraform/terraform.tfstate
+infrastructure/terraform/terraform.tfstate.backup
+infrastructure/terraform/*.tfvars
+infrastructure/terraform/plan_output.txt
