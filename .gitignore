@@ -21,3 +21,8 @@ infrastructure/terraform/terraform.tfstate
 infrastructure/terraform/terraform.tfstate.backup
 infrastructure/terraform/*.tfvars
 infrastructure/terraform/plan_output.txt
+
+# Testing
+.pytest_cache/
+htmlcov/
+.coverage
