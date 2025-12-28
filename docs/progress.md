@@ -578,3 +578,46 @@ Complete automation. Pipeline runs continuously in AWS cloud:
 
 **Time Invested:** 1.5 hours
 
+## Day 17 (Dec 27, 2025)
+**Goal:** Record and publish demo video
+
+**Accomplished:**
+- ✅ Planned 2-3 minute demo structure
+- ✅ Prepared recording environment
+- ✅ Recorded project walkthrough
+- ✅ Uploaded to YouTube (unlisted)
+- ✅ Added video link to README
+- ✅ Created shareable demo for interviews
+
+**Demo Content:**
+- Live dashboard showcase
+- Architecture explanation
+- Code highlights (Lambda, data quality)
+- Testing demonstration
+- Complete project overview
+
+**Video Details:**
+- Duration: ~2-3 minutes
+- Platform: YouTube (unlisted)
+- Quality: Screen recording with audio
+- Purpose: Portfolio showcase, interview prep
+
+**Key Talking Points Covered:**
+- Real-time data pipeline architecture
+- AWS serverless implementation
+- Data quality validation
+- Production monitoring
+- Testing framework
+- End-to-end workflow
+
+**Interview Value:**
+"I have a 2-minute demo video that walks through the entire pipeline - live dashboard, architecture, code, and tests. Makes it easy to showcase the project without needing live demos in interviews."
+
+**Next Steps (Day 18):**
+- Write technical blog post
+- 800-1000 words
+- Publish on Medium or dev.to
+- Focus on timestamp bug fix or full project overview
+
+**Time Invested:** 1 hour
+
