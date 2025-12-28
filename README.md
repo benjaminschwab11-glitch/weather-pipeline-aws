@@ -207,6 +207,12 @@ Built by a Senior Database Analyst with 25+ years in data warehousing, transitio
 
 ---
 
-**Last Updated:** December 11, 2024  
-**Status:** ✅ Active Development - Week 1 Complete
+## 🎯 Project Overview
+
+**🌐 Live Dashboard:** [View Dashboard](https://weather-pipeline-aws-f2ov36k74bnjfmhmcvbikw.streamlit.app)  
+**🎥 Demo Video:** [Watch 2-Minute Demo](https://youtu.be/4k96XB6TzIU)
+**📂 GitHub Repository:** [Source Code](https://github.com/benjaminschwab11-glitch/weather-pipeline-aws)  
+**Live Status:** ✅ Collecting data every 15 minutes, fully automated  
+**Dataset:** 3,000+ weather observations (and growing)  
+**Deployed:** December 2025
 
