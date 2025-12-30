@@ -51,3 +51,40 @@ variable "allowed_cidr_blocks" {
   default     = ["0.0.0.0/0"] # WARNING: Open to world - for portfolio only
 }
 
+# Lambda Configuration
+variable "lambda_function_name" {
+  description = "Name of Lambda function"
+  type        = string
+  default     = "weather-pipeline"
+}
+
+variable "lambda_runtime" {
+  description = "Lambda runtime"
+  type        = string
+  default     = "python3.11"
+}
+
+variable "lambda_timeout" {
+  description = "Lambda timeout in seconds"
+  type        = number
+  default     = 30
+}
+
+variable "lambda_memory" {
+  description = "Lambda memory in MB"
+  type        = number
+  default     = 128
+}
+
+variable "weather_api_key" {
+  description = "OpenWeatherMap API key"
+  type        = string
+  sensitive   = true
+}
+
+variable "cities" {
+  description = "Comma-separated list of cities"
+  type        = string
+  default     = "San Diego,Los Angeles,San Francisco,Seattle,Portland"
+}
+

@@ -163,3 +163,86 @@ terraform apply tfplan
 - [Terraform Import](https://developer.hashicorp.com/terraform/cli/import)
 - [AWS RDS Terraform](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/db_instance)
 
+## Lambda Infrastructure Added (Day 19)
+
+**Completed:** December 30, 2024
+
+### New Resources Defined
+
+**IAM Resources (`iam.tf`):**
+- Lambda execution role with assume role policy
+- AWS managed policy attachment (AWSLambdaBasicExecutionRole)
+- Custom CloudWatch metrics policy
+- Output: Lambda role ARN
+
+**Lambda Resources (`lambda.tf`):**
+- Lambda function with Python 3.11 runtime
+- Automated deployment package creation (archive provider)
+- Environment variable configuration
+- CloudWatch log group (7-day retention)
+- Outputs: Function ARN, name, invoke ARN
+
+**Configuration:**
+- Function name: weather-pipeline
+- Runtime: Python 3.11
+- Memory: 128 MB
+- Timeout: 30 seconds
+- Handler: lambda_function.lambda_handler
+
+**Environment Variables (from Terraform):**
+- WEATHER_API_KEY
+- CITIES
+- RDS_ENDPOINT (referenced from RDS resource)
+- RDS_DATABASE, RDS_USERNAME, RDS_PASSWORD
+- RDS_PORT
+
+### Terraform Plan Results
+```
+Plan: 7 to add, 0 to change, 2 to destroy
+```
+
+**Resources to Add:**
+1. aws_iam_role.lambda_role
+2. aws_iam_role_policy.lambda_cloudwatch_metrics
+3. aws_iam_role_policy_attachment.lambda_basic
+4. aws_lambda_function.weather_pipeline
+5. aws_cloudwatch_log_group.lambda_logs
+6. (2 additional dependency resources)
+
+**Why Not Applied:**
+
+Existing RDS and security group resources have configuration drift from manual creation:
+- Storage encryption settings
+- Security group descriptions
+- Resource naming
+
+Terraform would destroy and recreate these (losing data). Since the database contains production data, apply was not executed.
+
+**Learning:** This demonstrates the importance of Infrastructure as Code from project inception. Retrofitting IaC to manually-created resources is challenging due to:
+- Immutable resource attributes
+- Configuration drift
+- State management complexity
+
+### Production Deployment Approach
+
+**For greenfield deployment (new environment):**
+```bash
+# Initialize
+terraform init
+
+# Plan
+terraform plan -out=tfplan
+
+# Review carefully
+# Verify no existing resources will be destroyed
+
+# Apply
+terraform apply tfplan
+```
+
+**Current best practice:** Keep Lambda Terraform configuration as documentation and template for future deployments.
+
+### Interview Talking Point
+
+"I created complete Terraform configuration for the Lambda function, IAM roles, and CloudWatch logs. When attempting to integrate with existing manually-created RDS resources, I encountered configuration drift requiring resource replacement. This experience reinforced why infrastructure-as-code should be implemented from day one, not retrofitted. The configuration serves as a template for future deployments and demonstrates my understanding of IaC principles."
+
