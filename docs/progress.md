@@ -621,3 +621,73 @@ Complete automation. Pipeline runs continuously in AWS cloud:
 
 **Time Invested:** 1 hour
 
+## Day 19 (Dec 29, 2025)
+**Goal:** Complete Terraform IaC with Lambda function
+
+**Accomplished:**
+- ✅ Created IAM role and policies as Terraform code
+- ✅ Defined Lambda function resource in Terraform
+- ✅ Added CloudWatch log group configuration
+- ✅ Configured Lambda environment variables
+- ✅ Set up automated deployment package with archive provider
+- ✅ Validated complete Terraform configuration
+- ✅ Ran terraform plan successfully (7 resources to add)
+- ✅ Documented IaC implementation and lessons learned
+
+**Terraform Resources Added:**
+
+**iam.tf:**
+- aws_iam_role.lambda_role - Lambda execution role
+- aws_iam_role_policy.lambda_cloudwatch_metrics - Custom metrics policy
+- aws_iam_role_policy_attachment.lambda_basic - Managed policy attachment
+
+**lambda.tf:**
+- data.archive_file.lambda_zip - Deployment package automation
+- aws_lambda_function.weather_pipeline - Lambda function definition
+- aws_cloudwatch_log_group.lambda_logs - Log retention configuration
+
+**Configuration:**
+- Python 3.11 runtime
+- 128 MB memory, 30-second timeout
+- Environment variables from Terraform
+- Automated zip creation from lambda/package/
+
+**Terraform Plan Results:**
+- Plan: 7 to add, 0 to change, 2 to destroy
+- Validation: Success ✅
+- Ready for deployment (greenfield environments)
+
+**Decision: Not Applied to Production**
+
+Existing RDS/security group have configuration drift that would require destruction. Since database contains production data (3,000+ observations), terraform apply was not executed.
+
+**Key Learning:**
+
+"Infrastructure as Code is most effective when implemented from project inception. Retrofitting IaC to manually-created resources presents challenges:
+- Immutable attributes (encryption, names)
+- Configuration drift detection
+- Risk of data loss
+- State management complexity
+
+The complete Terraform configuration serves as a deployment template and demonstrates IaC principles for interviews."
+
+**Skills Demonstrated:**
+- Terraform resource definitions (Lambda, IAM, CloudWatch)
+- Archive provider for deployment automation
+- Environment variable management
+- AWS provider configuration
+- Understanding of IaC limitations and trade-offs
+- Production-safety thinking (not destroying live data)
+
+**Interview Value:**
+
+"I created complete Infrastructure as Code using Terraform for Lambda, IAM, and CloudWatch resources. When integrating with existing infrastructure, I encountered configuration drift - a real-world challenge that reinforced the importance of IaC from day one. The configuration validates successfully and is ready for greenfield deployments."
+
+**Next Steps (Day 20):**
+- EventBridge schedule in Terraform
+- Complete end-to-end IaC for new deployments
+- OR: Move to data quality framework
+- OR: Move to API endpoints
+
+**Time Invested:** 2 hours
+
