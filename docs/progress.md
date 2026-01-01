@@ -691,3 +691,168 @@ The complete Terraform configuration serves as a deployment template and demonst
 
 **Time Invested:** 2 hours
 
+## EventBridge Scheduler Added (Day 20)
+
+**Completed:** December 31, 2025
+
+### New Resources Defined
+
+**EventBridge Resources (`eventbridge.tf`):**
+- EventBridge Scheduler schedule (rate-based)
+- Lambda permission for EventBridge invocation
+- Target configuration with retry policy
+- State: ENABLED
+
+**IAM Resources (added to `iam.tf`):**
+- EventBridge execution role
+- Policy to invoke Lambda function
+- AssumeRole policy for scheduler.amazonaws.com
+
+**Configuration:**
+- Schedule name: weather-pipeline-schedule
+- Expression: rate(15 minutes)
+- Flexible time window: OFF (exact timing)
+- Retry policy: 185 max attempts, 24-hour max age
+- State: ENABLED
+
+### Complete Infrastructure Stack
+
+**Full Terraform configuration now includes:**
+
+1. **Compute:** Lambda function (Python 3.11, 128MB, 30s timeout)
+2. **Scheduling:** EventBridge Scheduler (15-minute intervals)
+3. **Storage:** RDS PostgreSQL (db.t4g.micro, 20GB gp3)
+4. **Security:** Security group (PostgreSQL 5432)
+5. **IAM:** Lambda execution role, EventBridge scheduler role
+6. **Monitoring:** CloudWatch log group (7-day retention)
+
+### Terraform Plan Results (Day 20)
+```
+Plan: 10 to add, 0 to change, 2 to destroy
+```
+
+**Resources Ready to Deploy (New Environment):**
+1. IAM roles (Lambda + EventBridge)
+2. IAM policies and attachments
+3. Lambda function with deployment package
+4. CloudWatch log group
+5. EventBridge schedule
+6. Lambda permission
+7. RDS database (new instance)
+8. Security group
+
+### Complete Deployment Workflow
+
+**For greenfield environment:**
+```bash
+# 1. Configure variables
+cp terraform.tfvars.example terraform.tfvars
+# Edit terraform.tfvars with your values
+
+# 2. Initialize
+terraform init
+
+# 3. Plan
+terraform plan -out=tfplan
+
+# 4. Review output carefully
+# Verify expected resources
+# Check for unintended deletions
+
+# 5. Apply
+terraform apply tfplan
+
+# 6. Verify deployment
+terraform output
+```
+
+**Expected outputs:**
+- `lambda_function_arn`
+- `lambda_function_name`
+- `lambda_role_arn`
+- `rds_endpoint`
+- `rds_address`
+- `schedule_name`
+- `schedule_arn`
+- `eventbridge_role_arn`
+
+### Infrastructure Dependencies
+
+**Terraform manages dependencies automatically:**
+```
+EventBridge Schedule
+    ↓ (depends on)
+EventBridge IAM Role
+    ↓ (depends on)
+Lambda Function
+    ↓ (depends on)
+Lambda IAM Role
+
+All reference → RDS Database
+```
+
+### What This Demonstrates
+
+**Infrastructure as Code Skills:**
+- Multi-resource orchestration
+- IAM role and policy management
+- Event-driven architecture
+- Serverless infrastructure
+- Automated deployment packaging
+- Resource dependency management
+- State management understanding
+
+**AWS Services as Code:**
+- Lambda (compute)
+- EventBridge Scheduler (orchestration)
+- RDS (data storage)
+- IAM (security)
+- CloudWatch (monitoring)
+
+### Production Considerations
+
+**For actual production deployment:**
+
+1. **Remote State:** Use S3 backend with DynamoDB locking
+2. **Environments:** Separate dev/staging/prod workspaces
+3. **Secrets:** Use AWS Secrets Manager instead of tfvars
+4. **VPC:** Place Lambda in VPC, restrict RDS security group
+5. **Monitoring:** Add CloudWatch alarms to Terraform
+6. **CI/CD:** GitHub Actions for automated terraform plan/apply
+7. **Modules:** Extract reusable components
+8. **Versioning:** Pin provider versions
+
+### Cost Estimate (If Deployed Fresh)
+
+**Free Tier (first 12 months):**
+- Lambda: 400,000 GB-seconds/month free
+- RDS: 750 hours/month free (db.t4g.micro)
+- EventBridge: 14M invocations/month free
+
+**Post Free Tier:**
+- Lambda: ~$0.20/month
+- RDS: ~$15/month
+- EventBridge: $0.00/month
+- **Total: ~$15.20/month**
+
+### Interview Talking Points
+
+**"I implemented complete Infrastructure as Code using Terraform for a serverless data pipeline."**
+
+**Technical Details:**
+- 10 AWS resources defined across 5 Terraform files
+- IAM roles with least-privilege policies
+- Event-driven architecture (EventBridge → Lambda → RDS)
+- Automated deployment package creation
+- Complete dependency management
+
+**Key Learning:**
+"When I attempted to import existing manually-created resources, I discovered configuration drift requiring resource replacement. This experience taught me that IaC should be implemented from project inception. The complete configuration validates successfully and serves as a deployment template for new environments."
+
+**Demonstrates:**
+- Infrastructure automation
+- AWS serverless architecture
+- Security best practices (IAM)
+- Production thinking (retry policies, logging)
+- Real-world problem solving
+
