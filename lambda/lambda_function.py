@@ -221,6 +221,120 @@ class WeatherPipelineLambda:
             print(f"WARNING: Failed to publish metrics: {e}")
             # Don't fail the whole pipeline if metrics fail
     
+    def calculate_quality_metrics(self, records):
+        """
+        Calculate aggregated quality metrics for a collection run
+        
+        Args:
+            records: List of weather records with quality scores
+            
+        Returns:
+            dict: Quality metrics
+        """
+        if not records:
+            return None
+        
+        quality_scores = [r['data_quality_score'] for r in records]
+        
+        # Count by quality threshold
+        perfect = sum(1 for s in quality_scores if s == 1.0)
+        degraded = sum(1 for s in quality_scores if 0.7 <= s < 1.0)
+        failed = sum(1 for s in quality_scores if s < 0.7)
+        
+        # Detailed failure tracking
+        temp_failures = sum(1 for r in records 
+                           if not (-50 <= r['temperature'] <= 150))
+        humidity_failures = sum(1 for r in records 
+                               if not (0 <= r['humidity'] <= 100))
+        pressure_failures = sum(1 for r in records 
+                               if not (900 <= r['pressure'] <= 1100))
+        wind_failures = sum(1 for r in records 
+                           if r['wind_speed'] < 0 or r['wind_speed'] > 200)
+        
+        return {
+            'collection_timestamp': records[0]['timestamp'],
+            'total_records': len(records),
+            'perfect_quality_count': perfect,
+            'degraded_quality_count': degraded,
+            'failed_quality_count': failed,
+            'avg_quality_score': round(sum(quality_scores) / len(quality_scores), 2),
+            'min_quality_score': round(min(quality_scores), 2),
+            'max_quality_score': round(max(quality_scores), 2),
+            'temperature_failures': temp_failures,
+            'humidity_failures': humidity_failures,
+            'pressure_failures': pressure_failures,
+            'wind_speed_failures': wind_failures
+        }
+
+    def store_quality_metrics(self, metrics):
+        """
+        Store quality metrics in database
+        
+        Args:
+            metrics: dict of quality metrics
+        """
+        if not metrics:
+            return
+        
+        conn = None
+        try:
+            # Connect to database (same pattern as store_weather_data)
+            conn = psycopg2.connect(**self.db_params, connect_timeout=5)
+            cursor = conn.cursor()
+            
+            insert_query = '''
+                INSERT INTO quality_metrics (
+                    collection_timestamp, total_records,
+                    perfect_quality_count, degraded_quality_count, failed_quality_count,
+                    avg_quality_score, min_quality_score, max_quality_score,
+                    temperature_failures, humidity_failures, 
+                    pressure_failures, wind_speed_failures
+                ) VALUES (
+                    %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
+                )
+                ON CONFLICT (collection_timestamp) DO UPDATE SET
+                    total_records = EXCLUDED.total_records,
+                    perfect_quality_count = EXCLUDED.perfect_quality_count,
+                    avg_quality_score = EXCLUDED.avg_quality_score
+            '''
+            
+            cursor.execute(insert_query, (
+                metrics['collection_timestamp'],
+                metrics['total_records'],
+                metrics['perfect_quality_count'],
+                metrics['degraded_quality_count'],
+                metrics['failed_quality_count'],
+                metrics['avg_quality_score'],
+                metrics['min_quality_score'],
+                metrics['max_quality_score'],
+                metrics['temperature_failures'],
+                metrics['humidity_failures'],
+                metrics['pressure_failures'],
+                metrics['wind_speed_failures']
+            ))
+            
+            conn.commit()
+            print(f"✓ Stored quality metrics: avg={metrics['avg_quality_score']}, "
+                  f"perfect={metrics['perfect_quality_count']}/{metrics['total_records']}")
+            
+            cursor.close()
+            
+        except psycopg2.Error as e:
+            if conn:
+                conn.rollback()
+            print(f"✗ Database error storing quality metrics: {e}")
+            raise
+            
+        except Exception as e:
+            if conn:
+                conn.rollback()
+            print(f"✗ Error storing quality metrics: {str(e)}")
+            raise
+            
+        finally:
+            if conn:
+                conn.close()
+
     def run(self):
         """Execute pipeline"""
         start_time = time.time()
@@ -236,7 +350,12 @@ class WeatherPipelineLambda:
         stored = 0
         if records:
             stored = self.store_weather_data(records)
-        
+
+        # Calculate and store quality metrics
+        quality_metrics = self.calculate_quality_metrics(records)
+        if quality_metrics:
+            self.store_quality_metrics(quality_metrics)
+            
         # Calculate execution time
         execution_time_ms = (time.time() - start_time) * 1000
         
@@ -249,9 +368,9 @@ class WeatherPipelineLambda:
         return {
             'records_collected': len(records),
             'records_stored': stored,
-            'execution_time_ms': execution_time_ms
+            'execution_time_ms': execution_time_ms,
+            'quality_metrics': quality_metrics
         }
-
 
 def lambda_handler(event, context):
     """
@@ -264,6 +383,11 @@ def lambda_handler(event, context):
     try:
         pipeline = WeatherPipelineLambda()
         result = pipeline.run()
+        
+        # Convert datetime to string for JSON serialization
+        if result.get('quality_metrics') and 'collection_timestamp' in result['quality_metrics']:
+            result['quality_metrics']['collection_timestamp'] = \
+                result['quality_metrics']['collection_timestamp'].isoformat()
         
         return {
             'statusCode': 200,
