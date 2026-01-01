@@ -88,3 +88,22 @@ variable "cities" {
   default     = "San Diego,Los Angeles,San Francisco,Seattle,Portland"
 }
 
+# EventBridge Scheduler Configuration
+variable "schedule_name" {
+  description = "Name of EventBridge schedule"
+  type        = string
+  default     = "weather-pipeline-schedule"
+}
+
+variable "schedule_expression" {
+  description = "Schedule expression (rate or cron)"
+  type        = string
+  default     = "rate(15 minutes)"
+}
+
+variable "schedule_description" {
+  description = "Description of the schedule"
+  type        = string
+  default     = "Triggers weather pipeline Lambda every 15 minutes"
+}
+
