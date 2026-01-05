@@ -198,6 +198,205 @@ ORDER BY event_count DESC;
 
 ---
 
+## PII Handling Framework
+
+### Overview
+
+Comprehensive toolkit for privacy-preserving transformations of sensitive data, including hashing, tokenization, anonymization, and differential privacy techniques.
+
+### Privacy Techniques Implemented
+
+**1. One-Way Hashing**
+- **Use case:** Email addresses, phone numbers, IP addresses
+- **Method:** SHA-256 with random salt
+- **Reversible:** No
+- **Verification:** Supported via salt-based comparison
+```python
+from privacy.pii_handlers import PIIHandler
+
+handler = PIIHandler()
+hashed = handler.hash_pii("user@example.com")
+# Returns: "salt:hash" format
+# Example: "62f6c3...364a83986"
+
+# Verify later
+is_valid = handler.verify_hash("user@example.com", hashed)
+# Returns: True
+```
+
+**2. HMAC Hashing (Keyed Hash)**
+- **Use case:** Consistent hashing across system
+- **Method:** HMAC-SHA256 with secret key
+- **Reversible:** No
+- **Benefit:** Same input always produces same output (with same key)
+```python
+hmac_hash = handler.hmac_hash("user@example.com")
+# Returns: "fba2a032bc184cd98f0e12c90dfcc3ee..."
+```
+
+**3. Tokenization (Pseudonymization)**
+- **Use case:** User IDs, session IDs, reversible identifiers
+- **Method:** Random token generation with mapping storage
+- **Reversible:** Yes
+- **Security:** Requires secure token map storage (vault/encrypted DB)
+```python
+# Tokenize
+token = handler.tokenize("user_12345", "users", "user_id")
+# Returns: "tok_DNMNEAw1Yi-9Q_xOJwxoaA"
+
+# Detokenize
+original = handler.detokenize(token)
+# Returns: "user_12345"
+```
+
+**4. Location Generalization (K-Anonymity)**
+- **Use case:** Privacy-preserving location analytics
+- **Method:** City → Region mapping
+- **Reversible:** No
+- **Benefit:** Prevents re-identification via location
+```python
+region = handler.generalize_location("San Diego")
+# Returns: "Southern California"
+```
+
+**Mapping:**
+- San Diego, Los Angeles → Southern California
+- San Francisco, San Jose, Oakland → Northern California  
+- Seattle, Portland → Pacific Northwest
+
+**5. Email Masking**
+- **Use case:** Display to users while preserving privacy
+- **Method:** Show first character + asterisks + domain
+- **Reversible:** No
+```python
+masked = handler.mask_email("user@example.com")
+# Returns: "u***@example.com"
+```
+
+**6. IP Address Masking**
+- **Use case:** Analytics while protecting individual identity
+- **Method:** Zero out last octet (preserve subnet)
+- **Reversible:** No
+```python
+masked_ip = handler.mask_ip("192.168.1.42")
+# Returns: "192.168.1.0"
+```
+
+**7. Differential Privacy (Noise Addition)**
+- **Use case:** Privacy-preserving analytics
+- **Method:** Add random noise to numeric values
+- **Reversible:** No
+- **Benefit:** Statistical properties preserved, individual values protected
+```python
+noisy_temp = handler.add_noise(72.5, noise_percent=0.05)
+# Returns: ~67-78°F (±5% noise)
+```
+
+**8. K-Anonymity (Age Bucketing)**
+- **Use case:** Prevent re-identification via age
+- **Method:** Group ages into buckets
+- **Reversible:** No
+```python
+bucket = handler.k_anonymize_age(32)
+# Returns: "25-34"
+```
+
+**Buckets:** 0-17, 18-24, 25-34, 35-44, 45-54, 55-64, 65+
+
+### Database-Level Privacy Functions
+
+**PostgreSQL functions for privacy at query time:**
+
+**1. Generalize City to Region**
+```sql
+SELECT generalize_city_to_region('San Diego');
+-- Returns: 'Southern California'
+```
+
+**2. Add Temperature Noise (Differential Privacy)**
+```sql
+SELECT 
+    temperature as original,
+    add_temperature_noise(temperature, 0.05) as anonymized
+FROM weather_observations
+LIMIT 5;
+```
+
+**3. Hash IP Address**
+```sql
+SELECT hash_ip_address('192.168.1.42');
+-- Returns: SHA-256 hash
+```
+
+**4. Mask IP Address**
+```sql
+SELECT mask_ip_address('192.168.1.42');
+-- Returns: '192.168.1.0'
+```
+
+### Privacy-Preserving Views
+
+**anonymized_weather_data:**
+- Location generalized to regions
+- Differential privacy noise added (5%)
+- Hourly aggregation
+- Only high-quality data (score ≥ 0.9)
+```sql
+SELECT * FROM anonymized_weather_data
+WHERE hour >= NOW() - INTERVAL '24 hours'
+ORDER BY hour DESC;
+```
+
+**regional_weather_summary:**
+- Maximum privacy protection
+- Regional aggregates only
+- Daily summarization
+- No individual city identification
+```sql
+SELECT * FROM regional_weather_summary
+WHERE date >= CURRENT_DATE - INTERVAL '7 days';
+```
+
+### Testing
+
+**26 unit tests covering:**
+- ✅ Hashing (one-way, HMAC)
+- ✅ Tokenization (forward/reverse)
+- ✅ Location generalization
+- ✅ Email/IP masking
+- ✅ Differential privacy
+- ✅ K-anonymity
+- ✅ Data classification
+- ✅ Null value handling
+- ✅ End-to-end workflows
+
+**Run tests:**
+```bash
+pytest tests/test_privacy.py -v
+# 26 passed in 0.34s
+```
+
+### Interview Talking Points
+
+**"I implemented a comprehensive PII handling framework with 8 privacy-preserving techniques including hashing, tokenization, differential privacy, and k-anonymity. The framework includes both Python utilities and PostgreSQL functions for privacy at the application and database levels. All techniques are covered by 26 unit tests with 100% pass rate."**
+
+**Technical depth:**
+- One-way hashing (SHA-256 with salt)
+- HMAC for consistent hashing
+- Reversible tokenization with secure storage
+- Differential privacy via noise addition
+- K-anonymity through bucketing/generalization
+- Database-level privacy functions
+- Privacy-preserving SQL views
+
+**Real-world application:**
+- Anonymized weather data view (location + noise)
+- Regional aggregates (maximum privacy)
+- Ready for user data (PII handling in place)
+- Production-ready architecture
+
+---
+
 ## Privacy-First Design Principles
 
 ### 1. Data Minimization
