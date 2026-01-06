@@ -6,7 +6,7 @@
 
 ## Overview
 
-REST API providing programmatic access to real-time and historical weather data collected from 5 West Coast cities. Data updated every 15 minutes via automated pipeline.
+REST API providing programmatic access to real-time weather data, historical trends, quality metrics, and GDPR/CCPA compliance endpoints.
 
 ## Authentication
 
@@ -14,6 +14,14 @@ REST API providing programmatic access to real-time and historical weather data 
 **Future:** API key authentication recommended for production
 
 ## Endpoints
+
+1. **GET /weather** - Current weather data
+2. **GET /weather/history** - Historical weather data
+3. **GET /quality** - Quality metrics
+4. **POST /compliance/consent** - Record user consent
+5. **GET /compliance/consent** - Get user consents
+6. **POST /compliance/dsar** - Create data subject request
+7. **GET /compliance/export** - Export user data
 
 ### 1. Get Current Weather
 
@@ -260,6 +268,264 @@ curl "https://v7x2axj6u9.execute-api.us-west-2.amazonaws.com/prod/quality?hours=
 # Seattle weather history
 curl "https://v7x2axj6u9.execute-api.us-west-2.amazonaws.com/prod/weather/history?city=Seattle&hours=48"
 ```
+
+---
+
+### 4. Record User Consent
+
+**Endpoint:** `POST /compliance/consent`
+
+**Description:** Records user consent for data processing activities (GDPR/CCPA compliance).
+
+**Request Body:**
+```json
+{
+  "user_id": "string (required)",
+  "consent_type": "string (required)",
+  "granted": "boolean (required)",
+  "version": "string (optional, default: '1.0')"
+}
+```
+
+**Consent Types:**
+- `DATA_PROCESSING` - General data processing
+- `MARKETING` - Marketing communications
+- `ANALYTICS` - Analytics and tracking
+- `THIRD_PARTY_SHARING` - Sharing with third parties
+
+**Example Request:**
+```bash
+curl -X POST https://v7x2axj6u9.execute-api.us-west-2.amazonaws.com/prod/compliance/consent \
+  -H "Content-Type: application/json" \
+  -d '{
+    "user_id": "user_123",
+    "consent_type": "MARKETING",
+    "granted": true
+  }'
+```
+
+**Example Response:**
+```json
+{
+  "consent_id": 42,
+  "message": "Consent recorded"
+}
+```
+
+---
+
+### 5. Get User Consents
+
+**Endpoint:** `GET /compliance/consent`
+
+**Description:** Retrieves all consent records for a specific user.
+
+**Query Parameters:**
+- `user_id` (required): User identifier
+
+**Example Request:**
+```bash
+curl "https://v7x2axj6u9.execute-api.us-west-2.amazonaws.com/prod/compliance/consent?user_id=user_123"
+```
+
+**Example Response:**
+```json
+{
+  "user_id": "user_123",
+  "consents": [
+    {
+      "consent_type": "MARKETING",
+      "consent_granted": true,
+      "consent_timestamp": "2026-01-06T04:30:00+00:00",
+      "consent_version": "1.0",
+      "consent_status": "ACTIVE"
+    },
+    {
+      "consent_type": "ANALYTICS",
+      "consent_granted": false,
+      "consent_timestamp": "2026-01-06T04:25:00+00:00",
+      "consent_version": "1.0",
+      "consent_status": "ACTIVE"
+    }
+  ]
+}
+```
+
+---
+
+### 6. Create DSAR Request
+
+**Endpoint:** `POST /compliance/dsar`
+
+**Description:** Creates a Data Subject Access Request (GDPR Article 15, CCPA §1798.100).
+
+**Request Body:**
+```json
+{
+  "user_id": "string (required)",
+  "request_type": "string (required)",
+  "requester_email": "string (optional)"
+}
+```
+
+**Request Types:**
+- `ACCESS` - Right to access personal data
+- `DELETION` - Right to be forgotten/deleted
+- `RECTIFICATION` - Right to correct inaccurate data
+- `PORTABILITY` - Right to receive data in portable format
+
+**Example Request:**
+```bash
+curl -X POST https://v7x2axj6u9.execute-api.us-west-2.amazonaws.com/prod/compliance/dsar \
+  -H "Content-Type: application/json" \
+  -d '{
+    "user_id": "user_123",
+    "request_type": "ACCESS",
+    "requester_email": "user123@example.com"
+  }'
+```
+
+**Example Response:**
+```json
+{
+  "request_id": "a2dc4a01-356f-4f91-88db-ea45694c76f6",
+  "message": "ACCESS request created",
+  "status": "PENDING"
+}
+```
+
+**SLA:** Requests are tracked with 30-day completion target per GDPR requirements.
+
+---
+
+### 7. Export User Data
+
+**Endpoint:** `GET /compliance/export`
+
+**Description:** Exports all user data in JSON format (GDPR Article 20 - Data Portability).
+
+**Query Parameters:**
+- `user_id` (required): User identifier
+
+**Example Request:**
+```bash
+curl "https://v7x2axj6u9.execute-api.us-west-2.amazonaws.com/prod/compliance/export?user_id=user_123"
+```
+
+**Example Response:**
+```json
+{
+  "user_id": "user_123",
+  "export_timestamp": "2026-01-06T04:35:00.123456",
+  "data_categories": {
+    "consents": [
+      {
+        "consent_type": "MARKETING",
+        "granted": true,
+        "timestamp": "2026-01-06T04:30:00",
+        "version": "1.0"
+      }
+    ],
+    "dsar_requests": [
+      {
+        "request_id": "a2dc4a01-356f-4f91-88db-ea45694c76f6",
+        "type": "ACCESS",
+        "status": "COMPLETED",
+        "timestamp": "2026-01-06T04:31:00"
+      }
+    ],
+    "weather_preferences": []
+  }
+}
+```
+
+**Response Headers:**
+```
+Content-Type: application/json
+Content-Disposition: attachment; filename=user_data_user_123.json
+```
+
+---
+
+## Compliance Features
+
+### GDPR Compliance
+
+**Article 6 - Lawful Processing:**
+- Consent management with versioning
+- Audit trail of all consent changes
+- Withdrawal of consent supported
+
+**Article 15 - Right to Access:**
+- DSAR request creation and tracking
+- Complete data export in JSON format
+- 30-day completion SLA
+
+**Article 17 - Right to be Forgotten:**
+- DSAR deletion request type
+- Hard delete or anonymization options
+- Complete audit trail
+
+**Article 20 - Data Portability:**
+- Machine-readable JSON export
+- All user data in single response
+- Structured format for easy import
+
+### CCPA Compliance
+
+**§1798.100 - Consumer Rights:**
+- Know what personal information is collected
+- Export functionality provides transparency
+
+**§1798.105 - Right to Delete:**
+- Deletion requests tracked and executed
+- Verification process supported
+
+**§1798.110 - Right to Know:**
+- Complete disclosure via export endpoint
+- Categories of data clearly organized
+
+### Audit Trail
+
+All compliance operations are logged to `audit_log` table:
+- Consent changes (CONSENT_CHANGE)
+- DSAR requests (DSAR_REQUEST)
+- Data exports (DATA_EXPORT)
+- Data deletions (DATA_DELETION)
+
+**Query audit log:**
+```sql
+SELECT * FROM audit_log 
+WHERE event_type IN ('CONSENT_CHANGE', 'DSAR_REQUEST')
+ORDER BY event_timestamp DESC;
+```
+
+### Request Tracking
+
+**Pending requests view:**
+```sql
+SELECT * FROM pending_dsar_requests;
+```
+
+**Returns:**
+- Request ID and type
+- Days pending
+- SLA status (ON_TIME, WARNING, OVERDUE)
+
+### Security Considerations
+
+**Authentication:** 
+- Production should require API key or OAuth
+- User identity verification required for DSAR
+
+**Rate Limiting:**
+- Recommended: 10 requests/hour per user
+- Prevents abuse of compliance endpoints
+
+**Data Deletion:**
+- Two modes: Hard delete (permanent) or Anonymize (preserve analytics)
+- Irreversible operation - requires confirmation
+- Complete audit trail maintained
 
 ---
 
