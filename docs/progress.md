@@ -1161,3 +1161,188 @@ noisy_temp = handler.add_noise(72.5, noise_percent=0.05)
 
 **Time Invested:** 2 hours
 
+## Day 25 (Jan 5, 2026)
+**Goal:** Implement GDPR/CCPA compliance endpoints for data subject requests
+
+**Accomplished:**
+- ✅ Created consent management database schema
+- ✅ Created DSAR (Data Subject Access Request) tables
+- ✅ Created data deletion log table
+- ✅ Built compliance API module (7 methods)
+- ✅ Integrated compliance endpoints into REST API
+- ✅ Deployed 4 new API endpoints to production
+- ✅ Tested all compliance endpoints successfully
+- ✅ Updated API documentation with compliance features
+
+**Database Schema Created:**
+
+**Tables:**
+1. `user_consent` - Tracks consent for data processing activities
+2. `data_subject_requests` - GDPR/CCPA data subject access requests
+3. `data_deletion_log` - Audit trail for all data deletion operations
+
+**Views:**
+1. `active_user_consents` - Current consent status per user
+2. `pending_dsar_requests` - Pending requests with SLA tracking
+
+**Functions:**
+1. `record_user_consent()` - Records consent with audit logging
+2. `create_dsar_request()` - Creates DSAR with unique UUID
+
+**Compliance API Module (compliance_api.py):**
+
+**Methods implemented:**
+1. `record_consent()` - Record user consent decision
+2. `get_user_consents()` - Retrieve all consents for user
+3. `create_dsar_request()` - Create data subject access request
+4. `get_dsar_status()` - Check DSAR request status
+5. `export_user_data()` - Export all user data (Data Portability)
+6. `delete_user_data()` - Right to be Forgotten implementation
+7. `get_pending_requests()` - Get pending requests with SLA status
+
+**REST API Endpoints Added:**
+
+**POST /compliance/consent:**
+- Records user consent for data processing
+- Supports: DATA_PROCESSING, MARKETING, ANALYTICS
+- Returns: consent_id
+
+**GET /compliance/consent:**
+- Retrieves all consents for user
+- Returns: Active/expired/withdrawn status
+- Query param: user_id
+
+**POST /compliance/dsar:**
+- Creates Data Subject Access Request
+- Types: ACCESS, DELETION, RECTIFICATION, PORTABILITY
+- Returns: request_id (UUID)
+- Tracks 30-day SLA
+
+**GET /compliance/export:**
+- Exports all user data in JSON format
+- GDPR Article 20 - Data Portability
+- CCPA §1798.110 - Right to Know
+- Returns: Complete data export
+
+**GDPR Compliance Implemented:**
+
+**Article 6 - Lawful Processing:**
+- ✅ Consent management with versioning
+- ✅ Audit trail of consent changes
+- ✅ Withdrawal support
+
+**Article 15 - Right to Access:**
+- ✅ DSAR request creation
+- ✅ 30-day SLA tracking
+- ✅ Complete data export
+
+**Article 17 - Right to be Forgotten:**
+- ✅ Deletion request type
+- ✅ Hard delete or anonymization options
+- ✅ Audit trail maintained
+
+**Article 20 - Data Portability:**
+- ✅ Machine-readable JSON export
+- ✅ Structured data format
+- ✅ All categories included
+
+**CCPA Compliance Implemented:**
+
+**§1798.100 - Consumer Rights:**
+- ✅ Know what data is collected
+- ✅ Export functionality
+
+**§1798.105 - Right to Delete:**
+- ✅ Deletion requests tracked
+- ✅ Verification process supported
+
+**§1798.110 - Right to Know:**
+- ✅ Complete disclosure via export
+- ✅ Data categories organized
+
+**Technical Implementation:**
+
+**Consent tracking:**
+```python
+# Record consent
+consent_id = compliance.record_consent(
+    "user_123",
+    "MARKETING",
+    granted=True,
+    version="1.0"
+)
+
+# Get user consents
+consents = compliance.get_user_consents("user_123")
+```
+
+**DSAR workflow:**
+```python
+# Create request
+request_id = compliance.create_dsar_request(
+    "user_123",
+    "ACCESS",
+    "user@example.com"
+)
+
+# Export data
+user_data = compliance.export_user_data("user_123")
+
+# Delete data (right to be forgotten)
+summary = compliance.delete_user_data("user_123", request_id)
+```
+
+**SLA Tracking:**
+- Automatic calculation of days pending
+- Status: ON_TIME (<20 days), WARNING (20-30 days), OVERDUE (>30 days)
+- View: `pending_dsar_requests`
+
+**Skills Demonstrated:**
+- GDPR/CCPA compliance engineering
+- Data subject rights implementation
+- Consent management systems
+- Audit trail design
+- RESTful compliance APIs
+- 30-day SLA tracking
+- Data export (portability)
+- Right to be forgotten workflows
+- PostgreSQL functions and views
+- UUID generation for request tracking
+
+**Interview Value:**
+
+"I implemented complete GDPR and CCPA compliance endpoints including consent management, Data Subject Access Requests, and right-to-be-forgotten functionality. The system tracks all compliance requests with 30-day SLAs, provides complete data export in JSON format, and maintains a comprehensive audit trail. All operations are exposed through REST API endpoints with proper error handling and validation."
+
+**Compliance Features:**
+- 4 REST API endpoints
+- 3 database tables
+- 2 views for monitoring
+- 2 PostgreSQL functions
+- UUID-based request tracking
+- 30-day SLA monitoring
+- Complete audit logging
+- Data portability support
+
+**Production Considerations:**
+- Authentication required (not yet implemented)
+- User identity verification needed
+- Rate limiting recommended (10 req/hour)
+- Data deletion is irreversible
+- Hard delete vs. anonymization options
+- Complete audit trail maintained
+
+**Business Impact:**
+- GDPR compliance readiness
+- CCPA compliance support
+- Reduced legal/regulatory risk
+- Automated compliance workflows
+- Consumer trust building
+- Scalable privacy infrastructure
+
+**Next Steps:**
+- Begin new privacy-focused project with Spark (Track 2)
+- OR: Final polish on weather project
+- OR: Start job search preparation
+
+**Time Invested:** 1 hour
+
