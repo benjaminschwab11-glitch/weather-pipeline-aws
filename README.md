@@ -421,6 +421,82 @@ This is a portfolio project, but feedback and suggestions are welcome!
 
 ---
 
+## 🎓 Skills Demonstrated
+
+**Cloud Architecture:**
+- AWS Lambda (serverless functions)
+- AWS RDS PostgreSQL (managed database)
+- AWS EventBridge (scheduled triggers)
+- AWS CloudWatch (monitoring & alerting)
+- AWS SNS (notifications)
+- AWS API Gateway (REST APIs)
+
+**Data Engineering:**
+- Automated ETL pipelines
+- Data quality frameworks
+- Real-time data collection
+- Database schema design
+- RESTful API development
+
+**Privacy Engineering:**
+- Data classification (5 sensitivity levels)
+- Automated retention policies
+- PII detection and handling (8 techniques)
+- GDPR/CCPA compliance endpoints
+- Consent management
+- Data Subject Access Requests (DSAR)
+- Right to be forgotten workflows
+- Complete audit trail
+
+**Infrastructure as Code:**
+- Terraform (complete AWS infrastructure)
+- Version-controlled infrastructure
+- Reproducible deployments
+
+**DevOps & Monitoring:**
+- CloudWatch dashboards
+- Custom alarms (3 types)
+- SNS notifications
+- Performance monitoring
+- Error tracking
+
+**Testing:**
+- 40 unit tests (14 pipeline + 26 privacy)
+- 100% test pass rate
+- Integration testing
+- API endpoint testing
+
+---
+
+## 🔗 Related Projects
+
+**Privacy-First Analytics Platform** ([GitHub](https://github.com/benjaminschwab11-glitch/privacy-analytics-spark))
+- Apache Spark processing (100K records in 60s)
+- Privacy framework at scale (1M+ users)
+- Kafka event streaming
+- Cohort analysis and event metrics
+
+---
+
+## 📊 Project Comparison
+
+| Feature | Weather Pipeline | Privacy Analytics |
+|---------|------------------|-------------------|
+| **Scale** | 8K+ records | 1M+ records |
+| **Processing** | Lambda (serverless) | Spark (distributed) |
+| **Focus** | Real-time collection | Batch + streaming |
+| **Privacy** | GDPR/CCPA APIs | 8 anonymization techniques |
+| **Cloud** | AWS (production) | Local + AWS RDS |
+| **Data Volume** | ~50 MB | ~1.5 GB |
+
+**Together, these projects demonstrate:**
+- Production cloud deployment + big data processing
+- Real-time pipelines + batch analytics
+- Privacy compliance + privacy at scale
+- Full-stack data engineering capabilities
+
+---
+
 ## 📄 License
 
 MIT License - See [LICENSE](LICENSE) for details
